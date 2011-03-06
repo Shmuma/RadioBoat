@@ -1,7 +1,14 @@
 #include <18F2550.h>
+// 48MHz operation from external clock
 #FUSES NOWDT, WDT128, PLL3, CPUDIV4, USBDIV, HSPLL, FCMEN, IESO, NOPUT, NOBROWNOUT, BORV20, VREGEN, NOPBADEN, LPT1OSC, NOMCLR, STVREN, NOLVP, NOXINST, NODEBUG, NOPROTECT, NOCPB, NOCPD, NOWRT, NOWRTC, NOWRTB, NOWRTD, NOEBTR, NOEBTRB, CCP2C1
 
-#use delay(clock=48000000)
+/* 8MHz from internal clock, but for USB it uses external clock which should be 48MHz */
+// #FUSES NOWDT, WDT128, PLL3, CPUDIV2, USBDIV, INTHS, FCMEN, IESO, NOPUT, NOBROWNOUT, BORV20, VREGEN, NOPBADEN, LPT1OSC, NOMCLR, STVREN, NOLVP, NOXINST, NODEBUG, NOPROTECT, NOCPB, NOCPD, NOWRT, NOWRTC, NOWRTB, NOWRTD, NOEBTR, NOEBTRB, CCP2C1
+
+#use delay(clock=16000000)
+/* 8KHz - 61Hz */
+/* 4KHz - 30Hz */
+/* 16MHz - 1Hz */
 
 /* USB */
 //#define USB_HID_DEVICE FALSE
@@ -46,9 +53,9 @@ static int1 pwm_enabled;
   Two below values are define pwm cycle time:
 
   Divisor values 1, 4 and 16:
-  1. (1/48000000)*4*1*period - 744 Hz...190 KHz
-  4. (1/48000000)*4*4*period - 3 KHz...761 KHz
-  16. (1/48000000)*4*16*period - 12 kHz...3 MHz
+  1. (1/48000000)*4*1*period - 127 - 30 KHz 
+  4. (1/48000000)*4*4*period - 127 - 7.5 KHz
+  16. (1/48000000)*4*16*period - 127 - 2Khz, 200 - 1.2KHz, 255 - 972 Hz
  */
 static int8 t2_divisor;         /* 1, 4, 16 */
 static int8 t2_period;          /* 1 to 255 */
@@ -65,7 +72,9 @@ void pwm_duty (int16 c1, int16 c2);
 void main ()
 {
     setup_timer_3 (T3_DISABLED|T3_DIV_BY_1);
-    pwm_init (0, 1, 1);
+//    pwm_init (0, 1, 1);
+    pwm_init (1, 16, 255);
+    pwm_duty (200, 800);
     usb_init ();
     lcd_init ();
     lcd_putc ('\f');
@@ -80,6 +89,7 @@ void main ()
                 process_usb_data ();
             }
         }
+        lcd_refresh ();
         delay_ms (100);
     }
 }
@@ -97,8 +107,8 @@ void process_usb_data ()
 void lcd_refresh ()
 {
     lcd_gotoxy (1, 1);
-    printf (lcd_putc, "P=%d D=%d I=%d",
-            pwm_enabled, t2_divisor, t2_period);
+    printf (lcd_putc, "U=%d P=%d D=%d I=%d",
+            usb_enumerated (), pwm_enabled, t2_divisor, t2_period);
 
     lcd_gotoxy (1, 2);
     printf (lcd_putc, "P1=%Ld%% P2=%Ld%%", pwm1_duty / 10, pwm2_duty / 10);
@@ -112,6 +122,8 @@ void pwm_init (int1 enabled, int8 divisor, int8 period)
     if (enabled) {
         setup_ccp1 (CCP_PWM);
         setup_ccp2 (CCP_PWM);
+        t2_divisor = divisor;
+        t2_period = period;
         switch (divisor) {
         case 1:
             setup_timer_2 (T2_DIV_BY_1, period, 1);

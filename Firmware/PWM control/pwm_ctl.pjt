@@ -46,6 +46,6 @@ Link=0
 Count=1
 1=main.c
 [Opened Files]
-1=usb_desc.h
-2=main.c
+1=main.c
+2=usb_desc.h
 3=
