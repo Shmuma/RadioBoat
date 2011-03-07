@@ -13,7 +13,7 @@ class ControllerConnector : public QObject
 {
     Q_OBJECT
 public:
-    virtual bool connect (const QString& options) = 0;
+    virtual bool connect () = 0;
     virtual void disconnect () = 0;
 
     virtual void send_raw (const QByteArray& data) = 0;
@@ -47,7 +47,7 @@ public:
         libusb_exit (_ctx);
     }
 
-    bool connect (const QString& options);
+    bool connect ();
     void disconnect ();
 
     void send_raw (const QByteArray& data);

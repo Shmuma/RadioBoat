@@ -17,9 +17,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void keyPressEvent (QKeyEvent* event);
+
 protected slots:
     void connectorStateChanged (const QString& state);
     void connectButtonClicked ();
+    void throttleSliderChanged (int val);
+    void rotateSliderChanged (int val);
 
 private:
     Ui::MainWindow *ui;

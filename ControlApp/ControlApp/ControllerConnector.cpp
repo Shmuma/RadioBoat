@@ -12,7 +12,7 @@
 // ------------------------------------------------------------
 // DirectConnector
 // ------------------------------------------------------------
-bool DirectConnector::connect (const QString& options)
+bool DirectConnector::connect ()
 {
     if (_connected)
         return true;

@@ -12,7 +12,8 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    ControllerConnector.cpp
+    ControllerConnector.cpp \
+    BoatController.cpp
 
 HEADERS  += mainwindow.h \
     BoatController.hpp \
