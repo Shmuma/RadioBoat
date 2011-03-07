@@ -24,8 +24,8 @@ public:
         }
     }
 
-    const ControllerConnector* connector () const 
-    { return _connector; };
+    ControllerConnector* connector () const
+    { return _connector; }
 };
 
 

@@ -17,6 +17,8 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     BoatController.hpp \
     ControllerConnector.hpp \
-    BoatController.hpp
+    BoatController.hpp \
+    libusb/libusb.h
 
-FORMS    += mainwindow.ui
+FORMS   += mainwindow.ui
+LIBS    += -L../ControlApp/libusb -lusb-1.0

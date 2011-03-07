@@ -17,6 +17,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected slots:
+    void connectorStateChanged (const QString& state);
+    void connectButtonClicked ();
+
 private:
     Ui::MainWindow *ui;
     BoatController _ctl;

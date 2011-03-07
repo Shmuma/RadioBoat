@@ -5,11 +5,13 @@
 #include <QString>
 #include <QByteArray>
 
+#include "libusb/libusb.h"
 
 
 // abstract connector with method
 class ControllerConnector : public QObject
 {
+    Q_OBJECT
 public:
     virtual bool connect (const QString& options) = 0;
     virtual void disconnect () = 0;
@@ -22,7 +24,7 @@ public:
 signals:
     void connected ();
     void disconnected (const QString& reason);
-    void state_changed (const QString& state);
+    void stateChanged (const QString& state);
 };
 
 
@@ -30,11 +32,20 @@ class DirectConnector : public ControllerConnector
 {
 private:
     bool _connected;
+    struct libusb_context* _ctx;
+    struct libusb_device_handle* _handle;
 
 public:
     DirectConnector ()
         : _connected (false)
-    {};
+    {
+        libusb_init (&_ctx);
+    }
+
+    ~DirectConnector ()
+    {
+        libusb_exit (_ctx);
+    }
 
     bool connect (const QString& options);
     void disconnect ();
@@ -42,7 +53,7 @@ public:
     void send_raw (const QByteArray& data);
 
     bool is_connected () const
-    { return _connected; };
+    { return _connected; }
 
     QString state () const;
 };
@@ -50,7 +61,6 @@ public:
 
 class NetworkConnector : public ControllerConnector
 {
-
 };
 
 #endif // __CONTROLLERCONNECTOR_H__
