@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "BoatController.hpp"
+#include "optionsdialog.hpp"
 
 #include <QLabel>
 #include <QMessageBox>
@@ -86,3 +87,12 @@ void MainWindow::keyPressEvent (QKeyEvent* event)
         QMainWindow::keyPressEvent(event);
 }
 
+
+void MainWindow::optionsButtonClicked ()
+{
+    OptionsDialog dlg (this);
+
+    if (dlg.exec () == QDialog::Accepted) {
+
+    }
+}

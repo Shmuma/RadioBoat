@@ -189,8 +189,8 @@ p, li { white-space: pre-wrap; }
    <slot>throttleSliderChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>99</x>
-     <y>104</y>
+     <x>199</x>
+     <y>115</y>
     </hint>
     <hint type="destinationlabel">
      <x>45</x>
@@ -214,10 +214,27 @@ p, li { white-space: pre-wrap; }
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>connectionOptionsButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>optionsButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>240</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>384</x>
+     <y>263</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>connectButtonClicked()</slot>
   <slot>throttleSliderChanged(int)</slot>
   <slot>rotateSliderChanged(int)</slot>
+  <slot>optionsButtonClicked()</slot>
  </slots>
 </ui>

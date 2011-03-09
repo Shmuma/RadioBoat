@@ -23,6 +23,7 @@ protected:
 protected slots:
     void connectorStateChanged (const QString& state);
     void connectButtonClicked ();
+    void optionsButtonClicked ();
     void throttleSliderChanged (int val);
     void rotateSliderChanged (int val);
 
