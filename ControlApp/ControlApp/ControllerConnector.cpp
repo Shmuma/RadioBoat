@@ -61,5 +61,30 @@ QString DirectConnector::state () const
 // ------------------------------------------------------------
 QString NetworkConnector::state () const
 {
-    return tr ("Mode: remote");
+    QString res = tr ("Mode: remote, State: ");
+    switch (_sock.state ()) {
+    case QAbstractSocket::UnconnectedState:
+        return res + tr ("disconnected");
+    case QAbstractSocket::HostLookupState:
+        return res + tr ("lookup");
+    case QAbstractSocket::ConnectingState:
+        return res + tr ("connecting");
+    case QAbstractSocket::ConnectedState:
+        return res + tr ("connected");
+    case QAbstractSocket::ClosingState:
+        return res + tr ("closing");
+    default:
+        return res + tr ("unknown");
+    }
+    return res + tr ("unknown");
+}
+
+
+void NetworkConnector::socketStateChanged (QAbstractSocket::SocketState state)
+{
+    if (state == QAbstractSocket::UnconnectedState)
+        emit disconnected ("");
+    if (state == QAbstractSocket::ConnectedState)
+        emit connected ();
+    emit stateChanged (this->state ());
 }

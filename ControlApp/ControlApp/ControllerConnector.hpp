@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QByteArray>
+#include <QTcpSocket>
 
 #include "libusb/libusb.h"
 
@@ -30,6 +31,7 @@ signals:
 
 class DirectConnector : public ControllerConnector
 {
+    Q_OBJECT
 private:
     bool _connected;
     struct libusb_context* _ctx;
@@ -61,22 +63,44 @@ public:
 
 class NetworkConnector : public ControllerConnector
 {
+    Q_OBJECT
+private:
+    QString _host;
+    int _port;
+    QTcpSocket _sock;
+
 public:
     NetworkConnector (const QString &host, int port)
-    {}
+        : _host (host),
+          _port (port)
+    {
+        QObject::connect (&_sock, SIGNAL (stateChanged (QAbstractSocket::SocketState)),
+                          this, SLOT (socketStateChanged (QAbstractSocket::SocketState)));
+    }
 
     bool connect ()
-    {}
+    {
+        _sock.connectToHost (_host, _port);
+        return true;
+    }
+
     void disconnect ()
-    {}
+    {
+        _sock.disconnectFromHost ();
+    }
 
     void send_raw (const QByteArray& data)
-    {}
+    {
+        _sock.write (data);
+    }
 
     bool is_connected () const
-    { return false; }
+    { return _sock.state () == QAbstractSocket::ConnectedState; }
 
     QString state () const;
+
+protected slots:
+    void socketStateChanged (QAbstractSocket::SocketState state);
 };
 
 #endif // __CONTROLLERCONNECTOR_H__
