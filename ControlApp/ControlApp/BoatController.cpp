@@ -1,6 +1,7 @@
 #include "BoatController.hpp"
 
 #include <QByteArray>
+#include <QObject>
 
 
 BoatController::~BoatController()
@@ -11,7 +12,7 @@ BoatController::~BoatController()
 }
 
 
-bool BoatController::connect ()
+bool BoatController::connectDevice ()
 {
     if (_connector->connect ()) {
         update (true);
@@ -22,7 +23,7 @@ bool BoatController::connect ()
 }
 
 
-void BoatController::disconnect ()
+void BoatController::disconnectDevice ()
 {
     update (false);
     _connector->disconnect();
@@ -55,3 +56,21 @@ void BoatController::update (bool enabled)
     _connector->send_raw (data);
 }
 
+
+void BoatController::updateOptions (const Options &opts)
+{
+    if (_connector)
+        delete _connector;
+    if (opts.localMode ())
+        _connector = new DirectConnector;
+    else
+        _connector = new NetworkConnector (opts.host (), opts.port ());
+    connect (_connector, SIGNAL (stateChanged (const QString&)), this, SLOT (_connectorStateChanged (const QString&)));
+    emit connectorStateChanged (_connector->state ());
+}
+
+
+void BoatController::_connectorStateChanged (const QString& state)
+{
+    emit connectorStateChanged (state);
+}

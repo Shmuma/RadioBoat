@@ -50,7 +50,16 @@ void DirectConnector::send_raw (const QByteArray& data)
 QString DirectConnector::state () const
 {
     if (!_connected)
-        return QString (tr ("Mode: local, State: disconnected"));
+        return tr ("Mode: local, State: disconnected");
     else
-        return QString (tr ("Mode: local, State: connected"));
+        return tr ("Mode: local, State: connected");
+}
+
+
+// ------------------------------------------------------------
+// NetworkConnector
+// ------------------------------------------------------------
+QString NetworkConnector::state () const
+{
+    return tr ("Mode: remote");
 }

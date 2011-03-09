@@ -34,15 +34,15 @@ int main (int argc, char *argv[])
     while (1) {
         handle = libusb_open_device_with_vid_pid (ctx, BOAT_VENDOR, BOAT_PRODUCT);
     
-        if (!handle) {
+        if (!handle && 0) {
             printf ("Boat USB device not found, sleep for 10 seconds and try again\n");
             sleep (10);
         }
         else {
             printf ("Boat device found, open master socket\n");
-            libusb_claim_interface (handle, 0);
+            //            libusb_claim_interface (handle, 0);
             run_daemon (handle);
-            libusb_close (handle);
+            //            libusb_close (handle);
             break;
         }
     }
@@ -113,6 +113,6 @@ void handle_client (int fd, libusb_device_handle* handle)
             break;
         }
         printf ("%02x, %02x, %02x\n", msg.enable, msg.c1_p, msg.c2_p);
-        libusb_bulk_transfer (handle, 1 | LIBUSB_ENDPOINT_OUT, (unsigned char*)&msg, sizeof (msg), &gone, 1000);
+        //        libusb_bulk_transfer (handle, 1 | LIBUSB_ENDPOINT_OUT, (unsigned char*)&msg, sizeof (msg), &gone, 1000);
     }
 }

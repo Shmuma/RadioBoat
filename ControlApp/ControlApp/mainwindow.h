@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "BoatController.hpp"
+#include "options.hpp"
 
 namespace Ui {
     class MainWindow;
@@ -29,6 +30,7 @@ protected slots:
 
 private:
     Ui::MainWindow *ui;
+    Options _opts;
     BoatController _ctl;
 };
 

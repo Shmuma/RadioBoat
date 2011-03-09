@@ -61,6 +61,22 @@ public:
 
 class NetworkConnector : public ControllerConnector
 {
+public:
+    NetworkConnector (const QString &host, int port)
+    {}
+
+    bool connect ()
+    {}
+    void disconnect ()
+    {}
+
+    void send_raw (const QByteArray& data)
+    {}
+
+    bool is_connected () const
+    { return false; }
+
+    QString state () const;
 };
 
 #endif // __CONTROLLERCONNECTOR_H__

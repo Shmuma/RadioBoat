@@ -21,7 +21,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="QRadioButton" name="radioButton">
+       <widget class="QRadioButton" name="localModeRadioButton">
         <property name="text">
          <string>Local USB device</string>
         </property>
@@ -31,21 +31,30 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioButton_2">
+       <widget class="QRadioButton" name="remoteModeRadioButton">
         <property name="text">
          <string>Remote daemon</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_2">
-        <property name="title">
-         <string>GroupBox</string>
-        </property>
-        <property name="checkable">
+       <widget class="QFrame" name="remoteOptionsFrame">
+        <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="lineWidth">
+         <number>0</number>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="margin">
+          <number>0</number>
+         </property>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
@@ -150,20 +159,24 @@
    </hints>
   </connection>
   <connection>
-   <sender>radioButton_2</sender>
+   <sender>remoteModeRadioButton</sender>
    <signal>toggled(bool)</signal>
-   <receiver>groupBox_2</receiver>
-   <slot>setChecked(bool)</slot>
+   <receiver>OptionsDialog</receiver>
+   <slot>remoteModeToggled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>101</x>
-     <y>63</y>
+     <x>63</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
-     <x>97</x>
-     <y>92</y>
+     <x>398</x>
+     <y>183</y>
     </hint>
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>remoteModeToggled(bool)</slot>
+  <slot>localModeToggled(bool)</slot>
+ </slots>
 </ui>

@@ -2,7 +2,9 @@
 #define BOATCONTROLLER_HPP
 
 #include "ControllerConnector.hpp"
+#include "options.hpp"
 
+#include <QObject>
 
 class BoatController : public QObject
 {
@@ -12,12 +14,14 @@ private:
     int _p_throttle, _p_rotate;
 
 public:
-    BoatController (QObject* parent)
+    BoatController (const Options &opts, QObject* parent)
         : QObject (parent),
-          _connector (new DirectConnector ()),
+          _connector (0),
           _p_throttle (0),
           _p_rotate (50)
-    {};
+    {
+        updateOptions (opts);
+    };
 
     ~BoatController ();
 
@@ -28,8 +32,16 @@ public:
     void setRotate (int percent);
     void update (bool enabled = true);
 
-    bool connect ();
-    void disconnect ();
+    bool connectDevice ();
+    void disconnectDevice ();
+
+    void updateOptions (const Options &opts);
+
+protected slots:
+    void _connectorStateChanged (const QString& state);
+
+signals:
+    void connectorStateChanged (const QString& state);
 };
 
 

@@ -11,11 +11,11 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    _ctl (this)
+    _ctl (_opts, this)
 {
     ui->setupUi(this);
     ui->connectionStateLabel->setText (_ctl.connector ()->state ());
-    connect (_ctl.connector (), SIGNAL (stateChanged (const QString&)), this, SLOT (connectorStateChanged (const QString&)));
+    connect (&_ctl, SIGNAL (connectorStateChanged (const QString&)), this, SLOT (connectorStateChanged (const QString&)));
 }
 
 MainWindow::~MainWindow()
@@ -35,21 +35,21 @@ void MainWindow::connectorStateChanged (const QString& state)
 void MainWindow::connectButtonClicked ()
 {
     if (_ctl.connector ()->is_connected ())
-        _ctl.disconnect();
+        _ctl.disconnectDevice ();
     else
-        if (!_ctl.connect ())
+        if (!_ctl.connectDevice ())
             QMessageBox::warning(this, tr ("Connect failed"), tr ("Connection failed"));
 }
 
 
-void MainWindow::throttleSliderChanged(int val)
+void MainWindow::throttleSliderChanged (int val)
 {
     ui->throttleLabel->setText (QString ("%1%").arg (val));
     _ctl.setThrottle (val);
 }
 
 
-void MainWindow::rotateSliderChanged(int val)
+void MainWindow::rotateSliderChanged (int val)
 {
     ui->rotateLabel->setText(QString ("%1%").arg (val));
     _ctl.setRotate (val+50);
@@ -90,9 +90,11 @@ void MainWindow::keyPressEvent (QKeyEvent* event)
 
 void MainWindow::optionsButtonClicked ()
 {
-    OptionsDialog dlg (this);
+    OptionsDialog dlg (_opts, this);
 
     if (dlg.exec () == QDialog::Accepted) {
-
+        _opts = dlg.getOptions ();
+        _opts.save ();
+        _ctl.updateOptions (_opts);
     }
 }

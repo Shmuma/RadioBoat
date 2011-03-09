@@ -14,14 +14,16 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     ControllerConnector.cpp \
     BoatController.cpp \
-    optionsdialog.cpp
+    optionsdialog.cpp \
+    options.cpp
 
 HEADERS  += mainwindow.h \
     BoatController.hpp \
     ControllerConnector.hpp \
     BoatController.hpp \
     libusb/libusb.h \
-    optionsdialog.hpp
+    optionsdialog.hpp \
+    options.hpp
 
 FORMS   += mainwindow.ui \
     optionsdialog.ui
