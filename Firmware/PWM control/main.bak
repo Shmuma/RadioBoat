@@ -113,7 +113,7 @@ void pwm_init (int1 enabled)
     if (enabled) {
         setup_ccp1 (CCP_PWM);
         setup_ccp2 (CCP_PWM);
-        setup_timer_2 (T2_DIV_BY_16, 255, 1); // 88 is 2.8 KHz
+        setup_timer_2 (T2_DIV_BY_16, 250, 1); // 88 is 2.8 KHz
     }
     else {
         setup_ccp1 (CCP_OFF);

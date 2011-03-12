@@ -1,4 +1,4 @@
-CCS PCH C Compiler, Version 4.114, 93460303               07-мар-11 22:26
+CCS PCH C Compiler, Version 4.114, 93460303               12-мар-11 15:13
 
                Filename: C:\Users\Shmuma\Work\RadioBoat\Firmware\PWM control\main.lst
 
@@ -8730,7 +8730,7 @@ CCS PCH C Compiler, Version 4.114, 93460303               07-мар-11 22:26
 0D2C:  BCF    F94.1
 0D2E:  BCF    F8B.1
 0D30:  MOVWF  FBA
-....................         setup_timer_2 (T2_DIV_BY_16, 255, 1); 
+....................         setup_timer_2 (T2_DIV_BY_16, 255, 1); // 88 is 2.8 KHz 
 0D32:  MOVLW  00
 0D34:  IORLW  06
 0D36:  MOVWF  FCA

@@ -48,4 +48,5 @@ Count=1
 [Opened Files]
 1=main.c
 2=usb_desc.h
-3=
+3=..\..\..\..\..\..\Program Files\PICC\drivers\lcd.c
+4=
