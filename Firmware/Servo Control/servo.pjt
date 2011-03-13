@@ -17,8 +17,9 @@ AdditionalOptionString=
 0=0000 %S 0 0 796 451 3 0
 [Units]
 Link=0
-Count=1
+Count=2
 1=C:\Users\Shmuma\Work\RadioBoat\Firmware\Servo Control\servo
+2=usb_desc.h
 [Opened Files]
 1=servo.h
 2=servo.c

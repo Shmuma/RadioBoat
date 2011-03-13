@@ -1,4 +1,8 @@
->>> Warning 216 "servo.c" Line 123(0,1): Interrupts disabled during call to prevent re-entrancy:  (@MUL1616)
->>> Warning 216 "servo.c" Line 123(0,1): Interrupts disabled during call to prevent re-entrancy:  (reset_pwm)
-      Memory usage:   ROM=11%      RAM=2% - 4%
-      0 Errors,  2 Warnings.
+>>> Warning 203 "C:\Program Files\PICC\drivers\pic18_usb.c" Line 619(1,1): Condition always TRUE
+>>> Warning 216 "servo.c" Line 177(0,1): Interrupts disabled during call to prevent re-entrancy:  (usb_token_reset)
+>>> Warning 216 "servo.c" Line 177(0,1): Interrupts disabled during call to prevent re-entrancy:  (@MUL1616)
+>>> Warning 216 "servo.c" Line 177(0,1): Interrupts disabled during call to prevent re-entrancy:  (reset_pwm)
+>>> Warning 216 "servo.c" Line 177(0,1): Interrupts disabled during call to prevent re-entrancy:  (usb_flush_out)
+>>> Warning 202 "servo.c" Line 92(13,14): Variable never used:   c
+      Memory usage:   ROM=22%      RAM=19% - 22%
+      0 Errors,  6 Warnings.

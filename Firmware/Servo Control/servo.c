@@ -12,7 +12,26 @@
 #define LCD_DATA7 PIN_B4
 #include <lcd.c>
 
-#define CH1_PIN PIN_B7
+#include <pic18_usb.h>
+#include "usb_desc.h"
+#include <usb.c>
+
+/* usb buffers */
+struct pwm_msg {
+    union {
+        unsigned int8 buf[64];
+        struct {
+            int8 enabled;
+            int8 pwm1_duty_percent;
+            int8 pwm2_duty_percent;
+        };
+    } u;
+};
+
+struct pwm_msg rx_msg;
+unsigned int8 rx_msg_len;
+
+#define CH1_PIN PIN_C1
 #define CH2_PIN PIN_C2
 // PIN_C2
 // PIN_B7
@@ -28,6 +47,7 @@
 #define DUTY_TO_INT(p) (PWM_LOW_INT + ((PWM_HIGH_INT-PWM_LOW_INT)*(int16)p/100))
 
 /* pwm parameters */
+int1 pwm_enabled;
 int8 pwm_duty1;                  /* in percent */
 int8 pwm_duty2;
 
@@ -36,7 +56,9 @@ int16 pwm_int1, pwm_int2;
 int16 pwm_duty1_cnt, pwm_duty2_cnt, pwm_total_cnt;
 
 
+void process_usb_data ();
 void update_lcd ();
+void set_pwm_enabled (int1 val);
 void set_pwm_duty (int8 duty1, int8 duty2);
 void reset_pwm ();
 
@@ -68,32 +90,60 @@ void isr_timer0 (void)
 void main()
 {
     int16 c = 0;
+    usb_init ();
     lcd_init ();
     lcd_putc ('\f');
+    delay_ms (1);
+    update_lcd ();
 
     set_tris_b (0);             /* output on B */
     set_tris_c (0);             /* output on C */
-    set_pwm_duty (0, 0);
+    set_pwm_enabled (0);
+    set_pwm_duty (0, 50);
 
     setup_timer_0 (RTCC_INTERNAL | RTCC_DIV_1 | RTCC_8_BIT);
     enable_interrupts (INT_TIMER0);
     enable_interrupts (GLOBAL);
 
     for (;;) {
+        usb_task ();
+        if (usb_enumerated ()) {
+            if (usb_kbhit (1)) {
+                rx_msg_len = usb_get_packet (1, &rx_msg, sizeof (rx_msg));
+                process_usb_data ();
+            }
+        }
         update_lcd ();
         delay_ms (100);
-        c++;
-        if (!(c % 5))
-            set_pwm_duty (pwm_duty1+1, pwm_duty2+1);
     }
+}
+
+
+void process_usb_data ()
+{
+    set_pwm_enabled (rx_msg.u.enabled);
+    set_pwm_duty (rx_msg.u.pwm1_duty_percent, rx_msg.u.pwm2_duty_percent);
+    update_lcd ();
 }
 
 
 void update_lcd ()
 {
     lcd_gotoxy (1, 1);
-    printf (lcd_putc, "C1=%d%%, C2=%d%%\n", pwm_duty1, pwm_duty2);
+    printf (lcd_putc, "%d%d, C1=%d%%, C2=%d%%\n", usb_enumerated (), pwm_enabled, pwm_duty1, pwm_duty2);
     printf (lcd_putc, "I1=%.2fms, I2=%.2fms\n", (float)pwm_int1/100.0, (float)pwm_int2/100.0);
+}
+
+
+void set_pwm_enabled (int1 val)
+{
+    if (pwm_enabled != val) {
+        pwm_enabled = val;
+        if (pwm_enabled)
+            enable_interrupts (INT_TIMER0);
+        else
+            disable_interrupts (INT_TIMER0);
+    }
 }
 
 
@@ -110,8 +160,15 @@ void set_pwm_duty (int8 c1, int8 c2)
 
 void reset_pwm ()
 {
-    output_high (CH1_PIN);
-    output_high (CH2_PIN);
+    if (pwm_enabled) {
+        output_high (CH1_PIN);
+        output_high (CH2_PIN);
+    }
+    else {
+        output_low (CH1_PIN);
+        output_low (CH2_PIN);
+    }
+
     pwm_duty1_cnt = INT_TO_COUNT (pwm_int1);
     pwm_duty2_cnt = INT_TO_COUNT (pwm_int2);
     pwm_total_cnt = INT_TO_COUNT (PWM_TOTAL_INT);
