@@ -20,6 +20,6 @@ Link=0
 Count=1
 1=C:\Users\Shmuma\Work\RadioBoat\Firmware\Servo Control\servo
 [Opened Files]
-1=servo.c
-2=servo.h
+1=servo.h
+2=servo.c
 3=

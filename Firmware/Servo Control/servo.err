@@ -1,2 +1,4 @@
-      Memory usage:   ROM=5%      RAM=2% - 2%
-      0 Errors,  0 Warnings.
+>>> Warning 216 "servo.c" Line 123(0,1): Interrupts disabled during call to prevent re-entrancy:  (@MUL1616)
+>>> Warning 216 "servo.c" Line 123(0,1): Interrupts disabled during call to prevent re-entrancy:  (reset_pwm)
+      Memory usage:   ROM=11%      RAM=2% - 4%
+      0 Errors,  2 Warnings.

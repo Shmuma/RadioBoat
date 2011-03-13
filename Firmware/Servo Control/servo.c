@@ -12,71 +12,79 @@
 #define LCD_DATA7 PIN_B4
 #include <lcd.c>
 
-#define SIGNAL_PIN PIN_B7
+#define CH1_PIN PIN_B7
+#define CH2_PIN PIN_C2
+// PIN_C2
+// PIN_B7
 
 #use fast_io (A)
 
+#define PWM_LOW_INT    50         /* 0.5 ms */
+#define PWM_HIGH_INT   500        /* 5 ms */
+#define PWM_TOTAL_INT  2500       /* 25 ms */
+
 /* We want to get interrupt at 10KHz to be able to handle 100HZ PWM with 1% */
-#define T0_VAL (65535 - (CLOCK_HZ/40000) + 50)
+#define INT_TO_COUNT(i) ((int16)(i)*10/(4*CLOCK_HZ/1000000))
+#define DUTY_TO_INT(p) (PWM_LOW_INT + ((PWM_HIGH_INT-PWM_LOW_INT)*(int16)p/100))
 
 /* pwm parameters */
-int8 pwm_freq;                  /* in Hz */
-int8 pwm_duty;                  /* in percent */
-
-int16 t0_value;                 /* precalculated 16-bit counter value to obtain pwm_freq*100 t0 overflow rate */
+int8 pwm_duty1;                  /* in percent */
+int8 pwm_duty2;
 
 /* pwm state */
-int8 pwm_duty_cnt, pwm_cycle_cnt;
+int16 pwm_int1, pwm_int2;
+int16 pwm_duty1_cnt, pwm_duty2_cnt, pwm_total_cnt;
+
 
 void update_lcd ();
-void set_pwm_freq (int8 freq);
-void set_pwm_duty (int8 duty);
+void set_pwm_duty (int8 duty1, int8 duty2);
+void reset_pwm ();
+
+
+inline int16 update_pwm_cnt (int16 cnt, int8 channel)
+{
+    if (cnt > 1)
+        return cnt-1;
+    else {
+        if (cnt)
+            output_low (channel);
+        return 0;
+    }
+}
 
 #int_timer0
 void isr_timer0 (void)
 {
-    set_timer0 (t0_value);
+    pwm_duty1_cnt = update_pwm_cnt (pwm_duty1_cnt, CH1_PIN);
+    pwm_duty2_cnt = update_pwm_cnt (pwm_duty2_cnt, CH2_PIN);
 
-    if (pwm_duty_cnt > 1)
-        pwm_duty_cnt--;
-    else {
-        if (pwm_duty_cnt) {
-            output_low (SIGNAL_PIN);
-            pwm_duty_cnt = 0;
-        }
-    }
-
-    if (pwm_cycle_cnt > 0)
-        pwm_cycle_cnt--;
-    else {
-        output_high (SIGNAL_PIN);
-        pwm_duty_cnt = pwm_duty;
-        pwm_cycle_cnt = 100;
-    }
+    if (pwm_total_cnt > 0)
+        pwm_total_cnt--;
+    else
+        reset_pwm ();
 }
 
 
 void main()
 {
+    int16 c = 0;
     lcd_init ();
     lcd_putc ('\f');
 
     set_tris_b (0);             /* output on B */
-    set_pwm_freq (70);
-    set_pwm_duty (30);
+    set_tris_c (0);             /* output on C */
+    set_pwm_duty (0, 0);
 
-    setup_timer_0 (RTCC_INTERNAL | RTCC_DIV_1);
+    setup_timer_0 (RTCC_INTERNAL | RTCC_DIV_1 | RTCC_8_BIT);
     enable_interrupts (INT_TIMER0);
     enable_interrupts (GLOBAL);
-    set_timer0 (t0_value);
-
-    output_high (SIGNAL_PIN);
-    pwm_duty_cnt = pwm_duty;
-    pwm_cycle_cnt = 100;
 
     for (;;) {
         update_lcd ();
         delay_ms (100);
+        c++;
+        if (!(c % 5))
+            set_pwm_duty (pwm_duty1+1, pwm_duty2+1);
     }
 }
 
@@ -84,20 +92,27 @@ void main()
 void update_lcd ()
 {
     lcd_gotoxy (1, 1);
-    printf (lcd_putc, "PWM: %d Hz, %d%%\n", pwm_freq, pwm_duty);
-    printf (lcd_putc, "Cycle: %d\n", pwm_cycle_cnt);
+    printf (lcd_putc, "C1=%d%%, C2=%d%%\n", pwm_duty1, pwm_duty2);
+    printf (lcd_putc, "I1=%.2fms, I2=%.2fms\n", (float)pwm_int1/100.0, (float)pwm_int2/100.0);
 }
 
 
-void set_pwm_freq (int8 freq)
+void set_pwm_duty (int8 c1, int8 c2)
 {
-    /* update t0_value */
-    t0_value = 65535 - (CLOCK_HZ/400) / freq + 50;
-    pwm_freq = freq;
+    pwm_duty1 = c1;
+    pwm_duty2 = c2;
+    pwm_int1 = DUTY_TO_INT(c1);
+    pwm_int2 = DUTY_TO_INT(c2);
+    reset_pwm ();
 }
 
 
-void set_pwm_duty (int8 duty)
+
+void reset_pwm ()
 {
-    pwm_duty = duty;
+    output_high (CH1_PIN);
+    output_high (CH2_PIN);
+    pwm_duty1_cnt = INT_TO_COUNT (pwm_int1);
+    pwm_duty2_cnt = INT_TO_COUNT (pwm_int2);
+    pwm_total_cnt = INT_TO_COUNT (PWM_TOTAL_INT);
 }
