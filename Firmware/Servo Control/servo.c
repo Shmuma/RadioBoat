@@ -31,12 +31,12 @@ struct pwm_msg {
 struct pwm_msg rx_msg;
 unsigned int8 rx_msg_len;
 
-#define CH1_PIN PIN_C1
-#define CH2_PIN PIN_C2
-// PIN_C2
-// PIN_B7
+#define CH1_PIN PIN_B7
+#define CH1_PIN2 PIN_C7
+#define CH2_PIN PIN_B6
+#define CH2_PIN2 PIN_C6
 
-#use fast_io (A)
+//#use fast_io (C)
 
 #define PWM_LOW_INT    50         /* 0.5 ms */
 #define PWM_HIGH_INT   500        /* 5 ms */
@@ -63,13 +63,37 @@ void set_pwm_duty (int8 duty1, int8 duty2);
 void reset_pwm ();
 
 
-inline int16 update_pwm_cnt (int16 cnt, int8 channel)
+inline void set_channel (int1 channel, int1 value)
+{
+   if (!channel) {
+      if (!value) {
+         output_low (CH1_PIN);
+         output_low (CH1_PIN2);
+      }
+      else {
+         output_high (CH1_PIN);
+         output_high (CH1_PIN2);
+      }
+   }
+   else {
+      if (!value) {
+         output_low (CH2_PIN);
+         output_low (CH2_PIN2);
+      }
+      else {
+         output_high (CH2_PIN);
+         output_high (CH2_PIN2);
+      }
+   }
+}
+
+inline int16 update_pwm_cnt (int16 cnt, int1 channel)
 {
     if (cnt > 1)
         return cnt-1;
     else {
         if (cnt)
-            output_low (channel);
+            set_channel (channel, 0);
         return 0;
     }
 }
@@ -77,8 +101,8 @@ inline int16 update_pwm_cnt (int16 cnt, int8 channel)
 #int_timer0
 void isr_timer0 (void)
 {
-    pwm_duty1_cnt = update_pwm_cnt (pwm_duty1_cnt, CH1_PIN);
-    pwm_duty2_cnt = update_pwm_cnt (pwm_duty2_cnt, CH2_PIN);
+    pwm_duty1_cnt = update_pwm_cnt (pwm_duty1_cnt, 0);
+    pwm_duty2_cnt = update_pwm_cnt (pwm_duty2_cnt, 1);
 
     if (pwm_total_cnt > 0)
         pwm_total_cnt--;
@@ -161,12 +185,12 @@ void set_pwm_duty (int8 c1, int8 c2)
 void reset_pwm ()
 {
     if (pwm_enabled) {
-        output_high (CH1_PIN);
-        output_high (CH2_PIN);
+        set_channel (0, 1);
+        set_channel (1, 1);
     }
     else {
-        output_low (CH1_PIN);
-        output_low (CH2_PIN);
+        set_channel (0, 0);
+        set_channel (1, 0);
     }
 
     pwm_duty1_cnt = INT_TO_COUNT (pwm_int1);
