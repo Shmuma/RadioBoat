@@ -1802,7 +1802,7 @@
    ³  ³        ÃÄlcd_send_nibble  0/70  Ram=1
    ³  ³        ÀÄlcd_send_nibble  0/70  Ram=1
    ³  ÃÄset_pwm_enabled  0/28  Ram=2
-   ³  ÃÄset_pwm_duty  0/182  Ram=4
+   ³  ÃÄset_pwm_duty  0/178  Ram=4
    ³  ³  ÃÄ@MUL1616  0/30  Ram=5
    ³  ³  ÃÄ@DIV1616  0/66  Ram=5
    ³  ³  ÃÄ@MUL1616  0/30  Ram=5
@@ -1833,7 +1833,7 @@
    ³  ³     ÀÄ@MUL1616  0/30  Ram=5
    ³  ÃÄprocess_usb_data  0/22  Ram=0
    ³  ³  ÃÄset_pwm_enabled  0/28  Ram=2
-   ³  ³  ÃÄset_pwm_duty  0/182  Ram=4
+   ³  ³  ÃÄset_pwm_duty  0/178  Ram=4
    ³  ³  ³  ÃÄ@MUL1616  0/30  Ram=5
    ³  ³  ³  ÃÄ@DIV1616  0/66  Ram=5
    ³  ³  ³  ÃÄ@MUL1616  0/30  Ram=5

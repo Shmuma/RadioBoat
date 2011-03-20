@@ -31,20 +31,31 @@ struct pwm_msg {
 struct pwm_msg rx_msg;
 unsigned int8 rx_msg_len;
 
-#define CH1_PIN PIN_B7
-#define CH1_PIN2 PIN_C7
-#define CH2_PIN PIN_B6
-#define CH2_PIN2 PIN_C6
+//#define CH1_PIN PIN_B7
+//#define CH1_PIN2 PIN_C7
+//#define CH2_PIN PIN_B6
+//#define CH2_PIN2 PIN_C6
+
+#define CH1_PIN PIN_C1
+#define CH1_PIN2 PIN_C1
+#define CH2_PIN PIN_C2
+#define CH2_PIN2 PIN_C2
+
 
 //#use fast_io (C)
 
-#define PWM_LOW_INT    50         /* 0.5 ms */
-#define PWM_HIGH_INT   500        /* 5 ms */
+#define PWM_LOW_INT_C1    50         /* 0.5 ms */
+#define PWM_HIGH_INT_C1   150        /* 1.5 ms */
+
+#define PWM_LOW_INT_C2    100         /* 1 ms */
+#define PWM_HIGH_INT_C2   200        /* 2 ms */
+
 #define PWM_TOTAL_INT  2500       /* 25 ms */
 
 /* We want to get interrupt at 10KHz to be able to handle 100HZ PWM with 1% */
 #define INT_TO_COUNT(i) ((int16)(i)*10/(4*CLOCK_HZ/1000000))
-#define DUTY_TO_INT(p) (PWM_LOW_INT + ((PWM_HIGH_INT-PWM_LOW_INT)*(int16)p/100))
+#define DUTY_TO_INT_C1(p) (PWM_LOW_INT_C1 + ((PWM_HIGH_INT_C1-PWM_LOW_INT_C1)*(int16)p/100))
+#define DUTY_TO_INT_C2(p) (PWM_LOW_INT_C2 + ((PWM_HIGH_INT_C2-PWM_LOW_INT_C2)*(int16)p/100))
 
 /* pwm parameters */
 int1 pwm_enabled;
@@ -72,7 +83,7 @@ inline void set_channel (int1 channel, int1 value)
       }
       else {
          output_high (CH1_PIN);
-         output_high (CH1_PIN);
+         output_high (CH1_PIN2);
       }
    }
    else {
@@ -175,8 +186,8 @@ void set_pwm_duty (int8 c1, int8 c2)
 {
     pwm_duty1 = c1;
     pwm_duty2 = c2;
-    pwm_int1 = DUTY_TO_INT(c1);
-    pwm_int2 = DUTY_TO_INT(c2);
+    pwm_int1 = DUTY_TO_INT_C1(c1);
+    pwm_int2 = DUTY_TO_INT_C2(c2);
     reset_pwm ();
 }
 

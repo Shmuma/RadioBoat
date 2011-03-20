@@ -282,7 +282,7 @@ ROM Allocation:
 014E  USB_NUM_INTERFACES
 0160  USB_DEVICE_DESC
 0182  USB_STRING_DESC
-1AEC  usb_kbhit
+1AE8  usb_kbhit
 0246  @MUL1616
 0970  usb_tbe
 0F9A  usb_detach
@@ -292,8 +292,8 @@ ROM Allocation:
 1008  usb_init
 09BE  usb_flush_in
 0894  usb_flush_out
-1B3C  usb_get_packet_buffer
-1C44  usb_get_packet
+1B38  usb_get_packet_buffer
+1C40  usb_get_packet
 0744  usb_stall_ep
 06EC  usb_unstall_ep
 079E  usb_endpoint_stalled
@@ -328,8 +328,8 @@ ROM Allocation:
 0F10  set_channel
 0EE4  update_pwm_cnt
 0E60  isr_timer0
-1C9C  MAIN
-1C86  process_usb_data
+1C98  MAIN
+1C82  process_usb_data
 1874  update_lcd
 0F6C  @const429
 129C  @DIV88
@@ -346,7 +346,7 @@ ROM Allocation:
 1A36  set_pwm_duty
 19F4  @DIV1616
 0D0E  reset_pwm
-1C9C  @cinit
+1C98  @cinit
 
 
 User Memory space: 

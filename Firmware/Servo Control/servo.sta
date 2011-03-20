@@ -1,6 +1,6 @@
 
-ROM used: 7478 (23%)
-          7478 (23%) including unused fragments
+ROM used: 7474 (23%)
+          7474 (23%) including unused fragments
 
           1 Average locations per line
           10 Average locations per statement
@@ -12,7 +12,7 @@ Stack used: 17 worst case (out of 31 total available)
 
 Lines Stmts  %   Files
 ----- ----- ---  -----
-  200    78  11  servo.c
+  211    78  11  servo.c
    35     0   0  servo.h
   409     0   0  ..\..\..\..\..\..\Program Files\PICC\devices\18F2550.h
   411   105  15  ..\..\..\..\..\..\Program Files\PICC\drivers\lcd.c
@@ -23,7 +23,7 @@ Lines Stmts  %   Files
   818   218  30  ..\..\..\..\..\..\Program Files\PICC\drivers\usb.c
  1373   320  44  ..\..\..\..\..\..\Program Files\PICC\drivers\pic18_usb.c
 ----- -----
- 5032   721 Total
+ 5043   721 Total
 
 Page ROM  %  RAM   Vol Diff  Functions:
 ---- --- --- ---   --- ----  ----------
@@ -103,28 +103,28 @@ Page ROM  %  RAM   Vol Diff  Functions:
 0    142   1  13             @DIV3232
 0    376   3  13             @PRINTF_L32D_92FPFPF
 0     28   0   2   112  3.0  set_pwm_enabled
-0    182   1   4   260  4.5  set_pwm_duty
+0    178   1   4   260  4.5  set_pwm_duty
 0     66   0   5             @DIV1616
 0    338   2   2   450  4.5  reset_pwm
 
 Program metrics:
     Functions               58
     Statements              721
-    Comments                2125
+    Comments                2129
     Volume (V)              43503
     Difficilty (D)          251.0
     Effort to implement (E) 10919424
     Time to implement (T)   168 hours, 31 minutes
     Est Delivered Bugs (B)  16
     Cyclomatic Complexity   124
-    Maintainability (MI)    98
+    Maintainability (MI)    97
 
  Segment     Used  Free
 -----------  ----  ----
 00000-00002     4  0  
 00004-00006     4  0  
 00008-000B8   178  0  
-000BA-07FFE  7292  25290  
+000BA-07FFE  7288  25294  
 
 
 
