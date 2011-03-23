@@ -3,7 +3,7 @@
 #FUSES NOWDT                    //No Watch Dog Timer
 #FUSES WDT128                   //Watch Dog Timer uses 1:128 Postscale
 #FUSES PLL3                     //Divide By 3(12MHz oscillator input)
-#FUSES CPUDIV4                  //System Clock by 4
+#FUSES CPUDIV1                  //System Clock by 4
 #FUSES USBDIV                   //USB clock source comes from PLL divide by 2
 #FUSES HSPLL                    //External Clock with PLL enabled and Fosc/4 on RA6
 #FUSES FCMEN                    //Fail-safe clock monitor enabled
