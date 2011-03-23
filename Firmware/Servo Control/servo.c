@@ -114,8 +114,10 @@ void isr_timer0 (void)
 
     if (pwm_stage == 1)
         set_timer0 (65536 - s1_delay);
-    else
+    else {
         set_timer0 (65536 - s2_delay);
+//        enable_interrupts (INT_USB);
+    }
 }
 
 
@@ -133,7 +135,7 @@ void main()
 
     setup_timer_0 (RTCC_INTERNAL | RTCC_DIV_128);
     enable_interrupts (GLOBAL);
-    set_pwm_enabled (1);
+    set_pwm_enabled (0);
 
     for (;;) {
         usb_task ();
@@ -188,8 +190,10 @@ void set_pwm_duty (int8 c1, int8 c2)
 /* start new pwm iteration */
 void reset_pwm ()
 {
-    if (!pwm_enabled)
+    if (!pwm_enabled) {
+//        enable_interrupts (INT_USB);
         return;
+    }
 
     /* calculate delays and channels */
     if (pwm_delay1 < pwm_delay2) {
@@ -207,6 +211,7 @@ void reset_pwm ()
         s1_ch = 0;
     }
 
+//    disable_interrupts (INT_USB); /* don't want to be interrupted during active pulse */
     output_high (CH1_PIN);
     output_high (CH2_PIN);
     output_high (CH1_PIN2);

@@ -1,9 +1,9 @@
-CCS PCH C Compiler, Version 4.114, 93460303               23-мар-11 23:56
+CCS PCH C Compiler, Version 4.114, 93460303               24-мар-11 00:28
 
                Filename: C:\Users\Shmuma\Work\RadioBoat\Firmware\Servo Control\servo.lst
 
-               ROM used: 7178 bytes (22%)
-                         Largest free fragment is 25590
+               ROM used: 7176 bytes (22%)
+                         Largest free fragment is 25592
                RAM used: 395 (19%) at main() level
                          447 (22%) worst case
                Stack:    17 worst case (8 in main + 9 for interrupts)
@@ -5556,7 +5556,7 @@ CCS PCH C Compiler, Version 4.114, 93460303               23-мар-11 23:56
 1A0E:  MOVLW  01
 1A10:  MOVWF  01
 .................... } 
-1A12:  GOTO   1BE2 (RETURN)
+1A12:  GOTO   1BE0 (RETURN)
 ....................  
 .................... // see usb_hw_layer.h for documentation 
 .................... int1 usb_tbe(unsigned int8 en) 
@@ -6262,7 +6262,7 @@ CCS PCH C Compiler, Version 4.114, 93460303               23-мар-11 23:56
 1B54:  MOVFF  7E,01
 1B58:  MOVFF  7F,02
 .................... } 
-1B5C:  GOTO   1BF8 (RETURN)
+1B5C:  GOTO   1BF6 (RETURN)
 ....................  
 .................... // see usb_hw_layer.h for documentation 
 .................... void usb_stall_ep(unsigned int8 endpoint)  
@@ -8666,7 +8666,7 @@ CCS PCH C Compiler, Version 4.114, 93460303               23-мар-11 23:56
 0E26:  DECF   FE8,F
 0E28:  MOVFF  9E,FD7
 0E2C:  MOVFF  9D,FD6
-....................     else 
+....................     else { 
 0E30:  BRA    0E54
 ....................         set_timer0 (65536 - s2_delay); 
 0E32:  MOVLW  00
@@ -8684,6 +8684,8 @@ CCS PCH C Compiler, Version 4.114, 93460303               23-мар-11 23:56
 0E4A:  DECF   FE8,F
 0E4C:  MOVFF  9E,FD7
 0E50:  MOVFF  9D,FD6
+.................... //        enable_interrupts (INT_USB); 
+....................     } 
 .................... } 
 ....................  
 ....................  
@@ -8742,51 +8744,50 @@ CCS PCH C Compiler, Version 4.114, 93460303               23-мар-11 23:56
 ....................     enable_interrupts (GLOBAL); 
 1BC6:  MOVLW  C0
 1BC8:  IORWF  FF2,F
-....................     set_pwm_enabled (1); 
-1BCA:  MOVLW  01
-1BCC:  MOVWF  x7B
-1BCE:  RCALL  19AA
+....................     set_pwm_enabled (0); 
+1BCA:  CLRF   x7B
+1BCC:  RCALL  19AA
 ....................  
 ....................     for (;;) { 
 ....................         usb_task (); 
-1BD0:  CALL   0ED4
+1BCE:  CALL   0ED4
 ....................         if (usb_enumerated ()) { 
-1BD4:  CALL   1184
-1BD8:  MOVF   01,F
-1BDA:  BZ    1BFE
+1BD2:  CALL   1184
+1BD6:  MOVF   01,F
+1BD8:  BZ    1BFC
 ....................             if (usb_kbhit (1)) { 
-1BDC:  MOVLW  01
-1BDE:  MOVWF  x7B
-1BE0:  BRA    19C6
-1BE2:  MOVF   01,F
-1BE4:  BZ    1BFE
+1BDA:  MOVLW  01
+1BDC:  MOVWF  x7B
+1BDE:  BRA    19C6
+1BE0:  MOVF   01,F
+1BE2:  BZ    1BFC
 ....................                 rx_msg_len = usb_get_packet (1, &rx_msg, sizeof (rx_msg)); 
-1BE6:  MOVLW  01
-1BE8:  MOVWF  x7B
-1BEA:  CLRF   x7D
-1BEC:  MOVLW  2A
-1BEE:  MOVWF  x7C
-1BF0:  CLRF   x7F
-1BF2:  MOVLW  40
-1BF4:  MOVWF  x7E
-1BF6:  BRA    1B1E
-1BF8:  MOVFF  01,6A
+1BE4:  MOVLW  01
+1BE6:  MOVWF  x7B
+1BE8:  CLRF   x7D
+1BEA:  MOVLW  2A
+1BEC:  MOVWF  x7C
+1BEE:  CLRF   x7F
+1BF0:  MOVLW  40
+1BF2:  MOVWF  x7E
+1BF4:  BRA    1B1E
+1BF6:  MOVFF  01,6A
 ....................                 process_usb_data (); 
-1BFC:  BRA    1B60
+1BFA:  BRA    1B60
 ....................             } 
 ....................         } 
 ....................         delay_ms (1); 
-1BFE:  MOVLW  01
-1C00:  MOVWF  x91
-1C02:  CALL   0F04
+1BFC:  MOVLW  01
+1BFE:  MOVWF  x91
+1C00:  CALL   0F04
 ....................     } 
-1C06:  BRA    1BD0
+1C04:  BRA    1BCE
 .................... } 
 ....................  
 ....................  
 .................... void process_usb_data () 
 .................... { 
-1C08:  SLEEP 
+1C06:  SLEEP 
 ....................     set_pwm_enabled (rx_msg.u.enabled); 
 *
 1B60:  MOVFF  2A,7B
@@ -8798,7 +8799,7 @@ CCS PCH C Compiler, Version 4.114, 93460303               23-мар-11 23:56
 ....................     update_lcd (); 
 1B70:  RCALL  1762
 .................... } 
-1B72:  GOTO   1BFE (RETURN)
+1B72:  GOTO   1BFC (RETURN)
 ....................  
 ....................  
 .................... void update_lcd () 
@@ -9048,12 +9049,14 @@ CCS PCH C Compiler, Version 4.114, 93460303               23-мар-11 23:56
 .................... /* start new pwm iteration */ 
 .................... void reset_pwm () 
 .................... { 
-....................     if (!pwm_enabled) 
+....................     if (!pwm_enabled) { 
 *
 0D0E:  BTFSC  x6B.0
 0D10:  BRA    0D14
+.................... //        enable_interrupts (INT_USB); 
 ....................         return; 
 0D12:  BRA    0DB0
+....................     } 
 ....................  
 ....................     /* calculate delays and channels */ 
 ....................     if (pwm_delay1 < pwm_delay2) { 
@@ -9115,6 +9118,7 @@ CCS PCH C Compiler, Version 4.114, 93460303               23-мар-11 23:56
 0D72:  CLRF   x79
 ....................     } 
 ....................  
+.................... //    disable_interrupts (INT_USB); /* don't want to be interrupted during active pulse */ 
 ....................     output_high (CH1_PIN); 
 0D74:  BCF    F94.7
 0D76:  BSF    F8B.7
