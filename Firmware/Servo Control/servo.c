@@ -44,8 +44,8 @@ unsigned int8 rx_msg_len;
 
 //#use fast_io (C)
 
-#define PWM_LOW_INT_C1    50         /* 0.5 ms */
-#define PWM_HIGH_INT_C1   150        /* 1.5 ms */
+#define PWM_LOW_INT_C1    70         /* 0.5 ms */
+#define PWM_HIGH_INT_C1   230        /* 1.5 ms */
 
 #define PWM_LOW_INT_C2    100         /* 1 ms */
 #define PWM_HIGH_INT_C2   200        /* 2 ms */
@@ -117,8 +117,20 @@ void isr_timer0 (void)
 
     if (pwm_total_cnt > 0)
         pwm_total_cnt--;
-    else
+    else {
+        static int1 c1_dir = 1;
+        if (c1_dir) {
+            pwm_int1++;
+            if (pwm_int1 == PWM_HIGH_INT_C1)
+                c1_dir = 0;
+        }
+        else {
+            pwm_int1--;
+            if (pwm_int1 == PWM_LOW_INT_C1)
+                c1_dir = 1;
+        }
         reset_pwm ();
+    }
 }
 
 
@@ -135,6 +147,8 @@ void main()
     set_tris_c (0);             /* output on C */
     set_pwm_enabled (0);
     set_pwm_duty (0, 50);
+    pwm_int1 = DUTY_TO_INT_C1(0);
+    reset_pwm ();
 
     setup_timer_0 (RTCC_INTERNAL | RTCC_DIV_1 | RTCC_8_BIT);
     enable_interrupts (INT_TIMER0);
@@ -186,9 +200,8 @@ void set_pwm_duty (int8 c1, int8 c2)
 {
     pwm_duty1 = c1;
     pwm_duty2 = c2;
-    pwm_int1 = DUTY_TO_INT_C1(c1);
+//    pwm_int1 = DUTY_TO_INT_C1(c1);
     pwm_int2 = DUTY_TO_INT_C2(c2);
-    reset_pwm ();
 }
 
 
