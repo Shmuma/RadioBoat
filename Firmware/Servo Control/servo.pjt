@@ -24,3 +24,6 @@ Count=2
 1=servo.h
 2=servo.c
 3=
+4=servo.sym
+5=servo.lst
+6=

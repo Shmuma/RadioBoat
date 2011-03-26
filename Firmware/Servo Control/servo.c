@@ -40,15 +40,16 @@ unsigned int8 rx_msg_len;
 
 
 
-//#use fast_io (C)
+#use fast_io (C)
 
+#define INT_MUL		  4     /* interval multiplication */
 #define PWM_LOW_INT_C1    70         /* 0.5 ms */
 #define PWM_HIGH_INT_C1   150        /* 1.5 ms */
 
 #define PWM_LOW_INT_C2    100         /* 1 ms */
 #define PWM_HIGH_INT_C2   200        /* 2 ms */
 
-#define PWM_TOTAL_INT  2000       /* 20 ms */
+#define PWM_TOTAL_INT  INT_MUL*2000       /* 20 ms */
 
 /* We want to get interrupt at 10KHz to be able to handle 100HZ PWM with 1% */
 #define DUTY_TO_INT_C1(p) (PWM_LOW_INT_C1 + ((PWM_HIGH_INT_C1-PWM_LOW_INT_C1)*(int16)p/100))
@@ -76,16 +77,16 @@ void set_pwm_duty (int8 duty1, int8 duty2);
 void reset_pwm ();
 
 
-void channel_off (int8 ch)
+inline void channel_off (int8 ch)
 {
     if (ch == 0) {
-        output_low (CH1_PIN);
-        output_low (CH1_PIN2);
+//        output_low (CH1_PIN);
+//        output_low (CH1_PIN2);
         output_low (CH1_PIN3);
     }
     else {
-        output_low (CH2_PIN);
-        output_low (CH2_PIN2);
+//        output_low (CH2_PIN);
+//        output_low (CH2_PIN2);
         output_low (CH2_PIN3);
     }
 }
@@ -113,9 +114,9 @@ void isr_timer0 (void)
     }        
 
     if (pwm_stage == 1)
-        set_timer0 (65536 - s1_delay);
+        set_timer0 (-s1_delay);
     else {
-        set_timer0 (65536 - s2_delay);
+        set_timer0 (-s2_delay);
 //        enable_interrupts (INT_USB);
     }
 }
@@ -132,8 +133,9 @@ void main()
     set_tris_b (0);             /* output on B */
     set_tris_c (0);             /* output on C */
     set_pwm_duty (0, 50);
+//    set_pwm_duty (92, 43);
 
-    setup_timer_0 (RTCC_INTERNAL | RTCC_DIV_128);
+    setup_timer_0 (RTCC_INTERNAL | RTCC_DIV_32);
     enable_interrupts (GLOBAL);
     set_pwm_enabled (0);
 
@@ -145,6 +147,7 @@ void main()
                 process_usb_data ();
             }
         }
+        update_lcd ();
         delay_ms (1);
     }
 }
@@ -161,9 +164,10 @@ void process_usb_data ()
 void update_lcd ()
 {
     lcd_gotoxy (1, 1);
-    printf (lcd_putc, "%d%d, C1=%d%%, C2=%d%%\n", usb_enumerated (), pwm_enabled, pwm_duty1, pwm_duty2);
-//    printf (lcd_putc, "I1=%.2fms, I2=%.2fms\n", (float)pwm_delay1/100.0, (float)pwm_delay2/100.0);
-    printf (lcd_putc, "%ld, %ld", pwm_delay1, pwm_delay2);
+//    printf (lcd_putc, "%d%d, C1=%d%%, C2=%d%%\n", usb_enumerated (), pwm_enabled, pwm_duty1, pwm_duty2);
+//    printf (lcd_putc, "I1=%.2fms, I2=%.2fms\n", (float)pwm_delay1/100.0/INT_MUL, (float)pwm_delay2/100.0/INT_MUL);
+    printf (lcd_putc, "%ld, %ld\n", pwm_delay1, pwm_delay2);
+    printf (lcd_putc, "%ld, %ld, %ld, %d, %d\n", s0_delay, s1_delay, s2_delay, s0_ch, s1_ch);
 }
 
 
@@ -183,8 +187,8 @@ void set_pwm_duty (int8 c1, int8 c2)
 {
     pwm_duty1 = c1;
     pwm_duty2 = c2;
-    pwm_delay1 = DUTY_TO_INT_C1(c1);
-    pwm_delay2 = DUTY_TO_INT_C2(c2);
+    pwm_delay1 = INT_MUL*DUTY_TO_INT_C1(c1);
+    pwm_delay2 = INT_MUL*DUTY_TO_INT_C2(c2);
 }
 
 
@@ -197,7 +201,7 @@ void reset_pwm ()
     }
 
     /* calculate delays and channels */
-    if (pwm_delay1 < pwm_delay2) {
+    if (pwm_delay1 <= pwm_delay2) {
         s0_delay = pwm_delay1;
         s1_delay = pwm_delay2 - pwm_delay1;
         s2_delay = PWM_TOTAL_INT - pwm_delay2;
@@ -212,13 +216,17 @@ void reset_pwm ()
         s1_ch = 0;
     }
 
+    /* if both delays are equal, add small delta to compensate isr not called twice */
+    if (!s1_delay)
+        s0_delay -= 1;
+
 //    disable_interrupts (INT_USB); /* don't want to be interrupted during active pulse */
-    output_high (CH1_PIN);
-    output_high (CH2_PIN);
-    output_high (CH1_PIN2);
-    output_high (CH2_PIN2);
+//    output_high (CH1_PIN);
+//    output_high (CH2_PIN);
+//    output_high (CH1_PIN2);
+//    output_high (CH2_PIN2);
     output_high (CH1_PIN3);
     output_high (CH2_PIN3);
-    set_timer0 (65536 - s0_delay);
+    set_timer0 (-s0_delay);
     pwm_stage = 0;
 }

@@ -1,6 +1,6 @@
 
-ROM used: 5946 (18%)
-          5946 (18%) including unused fragments
+ROM used: 5908 (18%)
+          5908 (18%) including unused fragments
 
           1 Average locations per line
           8 Average locations per statement
@@ -12,7 +12,7 @@ Stack used: 17 worst case (out of 31 total available)
 
 Lines Stmts  %   Files
 ----- ----- ---  -----
-  225    89  12  servo.c
+  233    84  12  servo.c
    35     0   0  servo.h
   409     0   0  ..\..\..\..\..\..\Program Files\PICC\devices\18F2550.h
   411   105  14  ..\..\..\..\..\..\Program Files\PICC\drivers\lcd.c
@@ -23,7 +23,7 @@ Lines Stmts  %   Files
   818   218  30  ..\..\..\..\..\..\Program Files\PICC\drivers\usb.c
  1373   320  44  ..\..\..\..\..\..\Program Files\PICC\drivers\pic18_usb.c
 ----- -----
- 5057   732 Total
+ 5065   727 Total
 
 Page ROM  %  RAM   Vol Diff  Functions:
 ---- --- --- ---   --- ----  ----------
@@ -73,7 +73,7 @@ Page ROM  %  RAM   Vol Diff  Functions:
 0      6   0   1    30  1.7  usb_request_send_response
 0      6   0   0    22  1.2  usb_request_stall
 0    396   3   5  2041  7.9  usb_isr_tok_dne
-0      6   0   0    29  1.9  usb_enumerated
+0      8   0   0    29  1.9  usb_enumerated
 0     36   0   3   231  4.0  usb_token_reset
 0     68   1   3   274  5.9  usb_endpoint_is_valid
 0     22   0   1   158  3.1  usb_isr_tok_in_dne
@@ -85,39 +85,37 @@ Page ROM  %  RAM   Vol Diff  Functions:
 0    108   1   0   790  7.7  usb_Get_Descriptor
 0     14   0   0    76  1.8  usb_finish_set_address
 0    102   1   4   591  8.6  usb_copy_desc_seg_to_ep
-0     32   0   1   165  2.7  channel_off
-0    134   1   4   367  4.2  isr_timer0
-0    136   1   0   472  4.7  MAIN
+ Inline        1    80  2.4  channel_off
+0    134   1   2   352  4.2  isr_timer0
+0    142   1   0   492  4.7  MAIN
 0     22   0   0   113  2.3  process_usb_data
-0    150   1   2   147  1.7  update_lcd
-0     24   0   0             @const427
+0    172   1   0   154  1.7  update_lcd
+0    234   2   9             @PRINTF_LD_92
 0     40   0   3             @DIV88
 0    200   2   6             @PRINTF_D_92
-0     30   0   3             @PSTRINGCN_92
-0    234   2   9             @PRINTF_LD_92
 0     28   0   2   112  3.0  set_pwm_enabled
-0    162   1   4   243  4.5  set_pwm_duty
-0     66   1   5             @DIV1616
-0    166   1   4   575  4.8  reset_pwm
+0    198   2   4   267  4.5  set_pwm_duty
+0     66   1   5   243  4.5  @DIV1616
+0    148   1   2   541  5.7  reset_pwm
 
 Program metrics:
-    Functions               57
-    Statements              732
-    Comments                2135
-    Volume (V)              43167
-    Difficilty (D)          246.9
-    Effort to implement (E) 10657557
-    Time to implement (T)   164 hours, 28 minutes
-    Est Delivered Bugs (B)  16
-    Cyclomatic Complexity   124
-    Maintainability (MI)    92
+    Functions               58
+    Statements              727
+    Comments                2145
+    Volume (V)              43596
+    Difficilty (D)          252.6
+    Effort to implement (E) 11014005
+    Time to implement (T)   169 hours, 58 minutes
+    Est Delivered Bugs (B)  17
+    Cyclomatic Complexity   125
+    Maintainability (MI)    95
 
  Segment     Used  Free
 -----------  ----  ----
 00000-00002     4  0  
 00004-00006     4  0  
 00008-000B8   178  0  
-000BA-07FFE  5760  26822  
+000BA-07FFE  5722  26860  
 
 
 
