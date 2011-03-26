@@ -3124,8 +3124,10 @@
    ³        ³  ÀÄusb_request_send_response  0/6  Ram=1
    ³        ÀÄusb_finish_set_address  0/14  Ram=0
    ³           ÀÄusb_set_address  0/22  Ram=1
-   ÀÄisr_timer0  0/194  Ram=2
+   ÀÄisr_timer0  0/304  Ram=3
       ÃÄ@DIV88  0/40  Ram=3
       ÃÄchannel_off  (Inline)  Ram=1
       ÃÄchannel_off  (Inline)  Ram=1
+      ÃÄ@delay_us1  0/26  Ram=1
+      ÃÄ@delay_us1  0/26  Ram=1
       ÀÄreset_pwm  0/202  Ram=2

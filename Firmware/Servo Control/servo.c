@@ -43,7 +43,7 @@ unsigned int8 rx_msg_len;
 #use fast_io (C)
 
 #define INT_MUL		  4     /* interval multiplication */
-#define PWM_LOW_INT_C1    70         /* 0.5 ms */
+#define PWM_LOW_INT_C1    70         /* 0.7 ms */
 #define PWM_HIGH_INT_C1   150        /* 1.5 ms */
 
 #define PWM_LOW_INT_C2    100         /* 1 ms */
@@ -95,15 +95,24 @@ inline void channel_off (int8 ch)
 #int_timer0
 void isr_timer0 (void)
 {
-    pwm_stage = (pwm_stage+1) % 3;
-    if (!pwm_delay[pwm_stage])
-        pwm_stage++;            /* skip stage */
-    set_timer0 (-pwm_delay[pwm_stage]); /* start timer ASAP to minimizer ISR delays */
+    do {
+        pwm_stage = (pwm_stage+1) % 3;
+        if (pwm_channels[pwm_stage] & 1)
+            channel_off (0);
+        if (pwm_channels[pwm_stage] & 2)
+            channel_off (1);
 
-    if (pwm_channels[pwm_stage] & 1)
-        channel_off (0);
-    if (pwm_channels[pwm_stage] & 2)
-        channel_off (1);
+        if (!pwm_delay[pwm_stage]) /* no delay at all */
+            continue;
+
+        if (pwm_delay[pwm_stage] < 10)
+            delay_us (pwm_delay[pwm_stage]*4);
+        else {
+            set_timer0 (-pwm_delay[pwm_stage]);
+            break;
+        }
+    }
+    while (pwm_stage);
     
     if (!pwm_stage) {
         if (pwm_dirty) {
