@@ -162,7 +162,8 @@ void update_lcd ()
 {
     lcd_gotoxy (1, 1);
     printf (lcd_putc, "%d%d, C1=%d%%, C2=%d%%\n", usb_enumerated (), pwm_enabled, pwm_duty1, pwm_duty2);
-    printf (lcd_putc, "I1=%.2fms, I2=%.2fms\n", (float)pwm_delay1/100.0, (float)pwm_delay2/100.0);
+//    printf (lcd_putc, "I1=%.2fms, I2=%.2fms\n", (float)pwm_delay1/100.0, (float)pwm_delay2/100.0);
+    printf (lcd_putc, "%ld, %ld", pwm_delay1, pwm_delay2);
 }
 
 

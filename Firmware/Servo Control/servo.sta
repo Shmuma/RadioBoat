@@ -1,18 +1,18 @@
 
-ROM used: 7176 (22%)
-          7176 (22%) including unused fragments
+ROM used: 5946 (18%)
+          5946 (18%) including unused fragments
 
           1 Average locations per line
-          10 Average locations per statement
+          8 Average locations per statement
 
 RAM used: 395 (19%) at main() level
-          447 (22%) worst case
+          434 (21%) worst case
 
 Stack used: 17 worst case (out of 31 total available)
 
 Lines Stmts  %   Files
 ----- ----- ---  -----
-  224    89  12  servo.c
+  225    89  12  servo.c
    35     0   0  servo.h
   409     0   0  ..\..\..\..\..\..\Program Files\PICC\devices\18F2550.h
   411   105  14  ..\..\..\..\..\..\Program Files\PICC\drivers\lcd.c
@@ -23,7 +23,7 @@ Lines Stmts  %   Files
   818   218  30  ..\..\..\..\..\..\Program Files\PICC\drivers\usb.c
  1373   320  44  ..\..\..\..\..\..\Program Files\PICC\drivers\pic18_usb.c
 ----- -----
- 5056   732 Total
+ 5057   732 Total
 
 Page ROM  %  RAM   Vol Diff  Functions:
 ---- --- --- ---   --- ----  ----------
@@ -31,8 +31,8 @@ Page ROM  %  RAM   Vol Diff  Functions:
 0     20   0   0             @const72
 0     76   1   3   751  4.5  lcd_read_byte
 0     82   1   2   254  3.7  lcd_read_nibble
-0     70   0   1   391  2.4  lcd_send_nibble
-0     70   0   3   404  3.5  lcd_send_byte
+0     70   1   1   391  2.4  lcd_send_nibble
+0     70   1   3   404  3.5  lcd_send_byte
 0    114   1   2   816  4.9  lcd_init
 0     46   0   4   266  5.5  lcd_gotoxy
 0    142   1   2   679  7.2  lcd_putc
@@ -53,12 +53,12 @@ Page ROM  %  RAM   Vol Diff  Functions:
 0    262   2   7  1092  5.4  usb_flush_in
 0    220   2   7   914  5.0  usb_flush_out
 0    264   2  12   652  5.9  usb_get_packet_buffer
-0     66   0   5   154  3.9  usb_get_packet
+0     66   1   5   154  3.9  usb_get_packet
 0     90   1   4   258  4.6  usb_stall_ep
 0     88   1   4   266  4.6  usb_unstall_ep
 0    106   1   5   373  6.0  usb_endpoint_stalled
 0     22   0   1    94  2.7  usb_set_address
-0    418   3  10  1774 10.4  usb_set_configured
+0    418   4  10  1774 10.4  usb_set_configured
 0     96   1   3   199  3.2  usb_disable_endpoint
 0     22   0   1    99  3.0  usb_disable_endpoints
 0      4   0   0    48  2.9  usb_clear_trn
@@ -75,7 +75,7 @@ Page ROM  %  RAM   Vol Diff  Functions:
 0    396   3   5  2041  7.9  usb_isr_tok_dne
 0      6   0   0    29  1.9  usb_enumerated
 0     36   0   3   231  4.0  usb_token_reset
-0     68   0   3   274  5.9  usb_endpoint_is_valid
+0     68   1   3   274  5.9  usb_endpoint_is_valid
 0     22   0   1   158  3.1  usb_isr_tok_in_dne
 0      6   0   1    53  1.9  usb_isr_tok_out_dne
 0     44   0   0   285  5.4  usb_isr_tok_setup_dne
@@ -87,43 +87,37 @@ Page ROM  %  RAM   Vol Diff  Functions:
 0    102   1   4   591  8.6  usb_copy_desc_seg_to_ep
 0     32   0   1   165  2.7  channel_off
 0    134   1   4   367  4.2  isr_timer0
-0    146   1   0   472  4.7  MAIN
+0    136   1   0   472  4.7  MAIN
 0     22   0   0   113  2.3  process_usb_data
-0    356   2   8   195  2.2  update_lcd
-0     24   0   0   195  2.2  @const427
+0    150   1   2   147  1.7  update_lcd
+0     24   0   0             @const427
 0     40   0   3             @DIV88
-0    200   1   6             @PRINTF_D_92
+0    200   2   6             @PRINTF_D_92
 0     30   0   3             @PSTRINGCN_92
-0     22   0   0             @const436
-0     54   0   2             @ITOF
-0    346   2  14             @DIVFF
-0    244   2  11             @MULFF
-0     64   0   5             @FTOSD
-0    142   1  13             @DIV3232
-0    376   3  13             @PRINTF_L32D_92FPFPF
+0    234   2   9             @PRINTF_LD_92
 0     28   0   2   112  3.0  set_pwm_enabled
 0    162   1   4   243  4.5  set_pwm_duty
-0     66   0   5   243  4.5  @DIV1616
+0     66   1   5             @DIV1616
 0    166   1   4   575  4.8  reset_pwm
 
 Program metrics:
-    Functions               59
+    Functions               57
     Statements              732
-    Comments                2134
-    Volume (V)              44426
-    Difficilty (D)          253.4
-    Effort to implement (E) 11256333
-    Time to implement (T)   173 hours, 43 minutes
-    Est Delivered Bugs (B)  17
+    Comments                2135
+    Volume (V)              43167
+    Difficilty (D)          246.9
+    Effort to implement (E) 10657557
+    Time to implement (T)   164 hours, 28 minutes
+    Est Delivered Bugs (B)  16
     Cyclomatic Complexity   124
-    Maintainability (MI)    101
+    Maintainability (MI)    92
 
  Segment     Used  Free
 -----------  ----  ----
 00000-00002     4  0  
 00004-00006     4  0  
 00008-000B8   178  0  
-000BA-07FFE  6990  25592  
+000BA-07FFE  5760  26822  
 
 
 
