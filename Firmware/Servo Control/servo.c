@@ -64,9 +64,10 @@ int8 pwm_duty2;
 int16 pwm_delay1, pwm_delay2;
 
 /* pwm state */
-int16 s0_delay, s1_delay, s2_delay; /* delay of stages */
-int8 s0_ch, s1_ch;                  /* stage channels */
-int8 pwm_stage;
+int1 pwm_dirty;                 /* 1 if pwm_delay1 or pwm_delay2 changed */
+int8 pwm_stage;                 /* index in an array */
+int16 pwm_delay[3];		/* delay of stages */
+int8 pwm_channels[3];           /* 0 - no changes, 1 - turn off first, 2 - off second, 3 - both */
 
 void process_usb_data ();
 void update_lcd ();
@@ -80,13 +81,13 @@ void reset_pwm ();
 inline void channel_off (int8 ch)
 {
     if (ch == 0) {
-//        output_low (CH1_PIN);
-//        output_low (CH1_PIN2);
+        output_low (CH1_PIN);
+        output_low (CH1_PIN2);
         output_low (CH1_PIN3);
     }
     else {
-//        output_low (CH2_PIN);
-//        output_low (CH2_PIN2);
+        output_low (CH2_PIN);
+        output_low (CH2_PIN2);
         output_low (CH2_PIN3);
     }
 }
@@ -94,30 +95,25 @@ inline void channel_off (int8 ch)
 #int_timer0
 void isr_timer0 (void)
 {
-    if (pwm_stage == 2) {
-        reset_pwm ();
-        return;
-    }
+    pwm_stage = (pwm_stage+1) % 3;
+    if (!pwm_delay[pwm_stage])
+        pwm_stage++;            /* skip stage */
+    set_timer0 (-pwm_delay[pwm_stage]); /* start timer ASAP to minimizer ISR delays */
 
-    if (pwm_stage == 0) {
-        channel_off (s0_ch);
-        if (s1_delay)
-            pwm_stage = 1;
-        else {
-            pwm_stage = 2;
-            channel_off (s1_ch);
+    if (pwm_channels[pwm_stage] & 1)
+        channel_off (0);
+    if (pwm_channels[pwm_stage] & 2)
+        channel_off (1);
+    
+    if (!pwm_stage) {
+        if (pwm_dirty) {
+            reset_pwm ();
+            pwm_dirty = 0;
         }
-    }
-    else {
-        channel_off (s1_ch);
-        pwm_stage = 2;
-    }        
-
-    if (pwm_stage == 1)
-        set_timer0 (-s1_delay);
-    else {
-        set_timer0 (-s2_delay);
-//        enable_interrupts (INT_USB);
+        else {
+            output_high (CH1_PIN3);
+            output_high (CH2_PIN3);
+        }
     }
 }
 
@@ -166,8 +162,7 @@ void update_lcd ()
     lcd_gotoxy (1, 1);
 //    printf (lcd_putc, "%d%d, C1=%d%%, C2=%d%%\n", usb_enumerated (), pwm_enabled, pwm_duty1, pwm_duty2);
 //    printf (lcd_putc, "I1=%.2fms, I2=%.2fms\n", (float)pwm_delay1/100.0/INT_MUL, (float)pwm_delay2/100.0/INT_MUL);
-    printf (lcd_putc, "%ld, %ld\n", pwm_delay1, pwm_delay2);
-    printf (lcd_putc, "%ld, %ld, %ld, %d, %d\n", s0_delay, s1_delay, s2_delay, s0_ch, s1_ch);
+    printf (lcd_putc, "%ld, %ld, %ld, %d, %d\n", pwm_delay[0], pwm_delay[1], pwm_delay[2], pwm_channels[1], pwm_channels[2]);
 }
 
 
@@ -189,6 +184,7 @@ void set_pwm_duty (int8 c1, int8 c2)
     pwm_duty2 = c2;
     pwm_delay1 = INT_MUL*DUTY_TO_INT_C1(c1);
     pwm_delay2 = INT_MUL*DUTY_TO_INT_C2(c2);
+    pwm_dirty = 1;
 }
 
 
@@ -201,32 +197,40 @@ void reset_pwm ()
     }
 
     /* calculate delays and channels */
-    if (pwm_delay1 <= pwm_delay2) {
-        s0_delay = pwm_delay1;
-        s1_delay = pwm_delay2 - pwm_delay1;
-        s2_delay = PWM_TOTAL_INT - pwm_delay2;
-        s0_ch = 0;
-        s1_ch = 1;
+    if (pwm_delay1 == pwm_delay2) {
+        pwm_delay[0] = pwm_delay1;
+        pwm_delay[1] = 0;
+        pwm_delay[2] = PWM_TOTAL_INT - pwm_delay1;
+        pwm_channels[0] = 0;
+        pwm_channels[1] = 0;
+        pwm_channels[2] = 3;
     }
     else {
-        s0_delay = pwm_delay2;
-        s1_delay = pwm_delay1 - pwm_delay2;
-        s2_delay = PWM_TOTAL_INT - pwm_delay1;
-        s0_ch = 1;
-        s1_ch = 0;
+        if (pwm_delay1 < pwm_delay2) {
+            pwm_delay[0] = pwm_delay1;
+            pwm_delay[1] = pwm_delay2 - pwm_delay1;
+            pwm_delay[2] = PWM_TOTAL_INT - pwm_delay2;
+            pwm_channels[0] = 0;
+            pwm_channels[1] = 1;
+            pwm_channels[2] = 2;
+        }
+        else {
+            pwm_delay[0] = pwm_delay2;
+            pwm_delay[1] = pwm_delay1 - pwm_delay2;
+            pwm_delay[2] = PWM_TOTAL_INT - pwm_delay1;
+            pwm_channels[0] = 0;
+            pwm_channels[1] = 2;
+            pwm_channels[2] = 1;
+        }
     }
 
-    /* if both delays are equal, add small delta to compensate isr not called twice */
-    if (!s1_delay)
-        s0_delay -= 1;
-
 //    disable_interrupts (INT_USB); /* don't want to be interrupted during active pulse */
-//    output_high (CH1_PIN);
-//    output_high (CH2_PIN);
-//    output_high (CH1_PIN2);
-//    output_high (CH2_PIN2);
+    output_high (CH1_PIN);
+    output_high (CH2_PIN);
+    output_high (CH1_PIN2);
+    output_high (CH2_PIN2);
     output_high (CH1_PIN3);
     output_high (CH2_PIN3);
-    set_timer0 (-s0_delay);
+    set_timer0 (-pwm_delay[0]);
     pwm_stage = 0;
 }
