@@ -42,7 +42,7 @@ unsigned int8 rx_msg_len;
 
 #use fast_io (C)
 
-#define INT_MUL		  4     /* interval multiplication */
+#define INT_MUL		  16         /* interval multiplication */
 #define PWM_LOW_INT_C1    70         /* 0.7 ms */
 #define PWM_HIGH_INT_C1   150        /* 1.5 ms */
 
@@ -64,10 +64,7 @@ int8 pwm_duty2;
 int16 pwm_delay1, pwm_delay2;
 
 /* pwm state */
-int1 pwm_dirty;                 /* 1 if pwm_delay1 or pwm_delay2 changed */
-int8 pwm_stage;                 /* index in an array */
-int16 pwm_delay[3];		/* delay of stages */
-int8 pwm_channels[3];           /* 0 - no changes, 1 - turn off first, 2 - off second, 3 - both */
+int1 c0_state, c1_state;
 
 void process_usb_data ();
 void update_lcd ();
@@ -75,55 +72,36 @@ void set_pwm_enabled (int1 val);
 void set_pwm_duty (int8 duty1, int8 duty2);
 
 /* initialize new pwm cycle (setup delays and starts timer) */
-void reset_pwm ();
+void reset_pwm (int1 channel);
 
-
-inline void channel_off (int8 ch)
-{
-    if (ch == 0) {
-        output_low (CH1_PIN);
-        output_low (CH1_PIN2);
-        output_low (CH1_PIN3);
-    }
-    else {
-        output_low (CH2_PIN);
-        output_low (CH2_PIN2);
-        output_low (CH2_PIN3);
-    }
-}
 
 #int_timer0
 void isr_timer0 (void)
 {
-    do {
-        pwm_stage = (pwm_stage+1) % 3;
-        if (pwm_channels[pwm_stage] & 1)
-            channel_off (0);
-        if (pwm_channels[pwm_stage] & 2)
-            channel_off (1);
-
-        if (!pwm_delay[pwm_stage]) /* no delay at all */
-            continue;
-
-        if (pwm_delay[pwm_stage] < 10)
-            delay_us (pwm_delay[pwm_stage]*4);
-        else {
-            set_timer0 (-pwm_delay[pwm_stage]);
-            break;
-        }
+    if (c0_state) {
+        output_low (CH1_PIN);
+        output_low (CH1_PIN2);
+        output_low (CH1_PIN3);
+        set_timer0 (pwm_delay1 - PWM_TOTAL_INT);
+        c0_state = 0;
     }
-    while (pwm_stage);
-    
-    if (!pwm_stage) {
-        if (pwm_dirty) {
-            reset_pwm ();
-            pwm_dirty = 0;
-        }
-        else {
-            output_high (CH1_PIN3);
-            output_high (CH2_PIN3);
-        }
+    else
+        reset_pwm (0);
+}
+
+
+#int_timer1
+void isr_timer1 (void)
+{
+    if (c1_state) {
+        output_low (CH2_PIN);
+        output_low (CH2_PIN2);
+        output_low (CH2_PIN3);
+        set_timer1 (pwm_delay2 - PWM_TOTAL_INT);
+        c1_state = 0;
     }
+    else
+        reset_pwm (1);
 }
 
 
@@ -138,9 +116,9 @@ void main()
     set_tris_b (0);             /* output on B */
     set_tris_c (0);             /* output on C */
     set_pwm_duty (0, 50);
-//    set_pwm_duty (92, 43);
 
-    setup_timer_0 (RTCC_INTERNAL | RTCC_DIV_32);
+    setup_timer_0 (RTCC_INTERNAL | RTCC_DIV_8);
+    setup_timer_1 (T1_INTERNAL | T1_DIV_BY_8);
     enable_interrupts (GLOBAL);
     set_pwm_enabled (0);
 
@@ -152,7 +130,6 @@ void main()
                 process_usb_data ();
             }
         }
-        update_lcd ();
         delay_ms (1);
     }
 }
@@ -169,9 +146,8 @@ void process_usb_data ()
 void update_lcd ()
 {
     lcd_gotoxy (1, 1);
-//    printf (lcd_putc, "%d%d, C1=%d%%, C2=%d%%\n", usb_enumerated (), pwm_enabled, pwm_duty1, pwm_duty2);
-//    printf (lcd_putc, "I1=%.2fms, I2=%.2fms\n", (float)pwm_delay1/100.0/INT_MUL, (float)pwm_delay2/100.0/INT_MUL);
-    printf (lcd_putc, "%ld, %ld, %ld, %d, %d\n", pwm_delay[0], pwm_delay[1], pwm_delay[2], pwm_channels[1], pwm_channels[2]);
+    printf (lcd_putc, "%d%d, C1=%d%%, C2=%d%%\n", usb_enumerated (), pwm_enabled, pwm_duty1, pwm_duty2);
+    printf (lcd_putc, "I1=%.2fms, I2=%.2fms\n", (float)pwm_delay1/100.0/INT_MUL, (float)pwm_delay2/100.0/INT_MUL);
 }
 
 
@@ -179,10 +155,14 @@ void set_pwm_enabled (int1 val)
 {
     if (pwm_enabled != val) {
         pwm_enabled = val;
-        if (pwm_enabled)
+        if (pwm_enabled) {
             enable_interrupts (INT_TIMER0);
-        else
+            enable_interrupts (INT_TIMER1);
+        }
+        else {
             disable_interrupts (INT_TIMER0);
+            disable_interrupts (INT_TIMER1);
+        }
     }
 }
 
@@ -193,53 +173,27 @@ void set_pwm_duty (int8 c1, int8 c2)
     pwm_duty2 = c2;
     pwm_delay1 = INT_MUL*DUTY_TO_INT_C1(c1);
     pwm_delay2 = INT_MUL*DUTY_TO_INT_C2(c2);
-    pwm_dirty = 1;
 }
 
 
 /* start new pwm iteration */
-void reset_pwm ()
+void reset_pwm (int1 channel)
 {
-    if (!pwm_enabled) {
-//        enable_interrupts (INT_USB);
+    if (!pwm_enabled)
         return;
-    }
 
-    /* calculate delays and channels */
-    if (pwm_delay1 == pwm_delay2) {
-        pwm_delay[0] = pwm_delay1;
-        pwm_delay[1] = 0;
-        pwm_delay[2] = PWM_TOTAL_INT - pwm_delay1;
-        pwm_channels[0] = 0;
-        pwm_channels[1] = 0;
-        pwm_channels[2] = 3;
+    if (!channel) {
+        output_high (CH1_PIN);
+        output_high (CH1_PIN2);
+        output_high (CH1_PIN3);
+        set_timer0 (-pwm_delay1);
+        c0_state = 1;
     }
     else {
-        if (pwm_delay1 < pwm_delay2) {
-            pwm_delay[0] = pwm_delay1;
-            pwm_delay[1] = pwm_delay2 - pwm_delay1;
-            pwm_delay[2] = PWM_TOTAL_INT - pwm_delay2;
-            pwm_channels[0] = 0;
-            pwm_channels[1] = 1;
-            pwm_channels[2] = 2;
-        }
-        else {
-            pwm_delay[0] = pwm_delay2;
-            pwm_delay[1] = pwm_delay1 - pwm_delay2;
-            pwm_delay[2] = PWM_TOTAL_INT - pwm_delay1;
-            pwm_channels[0] = 0;
-            pwm_channels[1] = 2;
-            pwm_channels[2] = 1;
-        }
+        output_high (CH2_PIN);
+        output_high (CH2_PIN2);
+        output_high (CH2_PIN3);
+        set_timer1 (-pwm_delay2);
+        c1_state = 1;
     }
-
-//    disable_interrupts (INT_USB); /* don't want to be interrupted during active pulse */
-    output_high (CH1_PIN);
-    output_high (CH2_PIN);
-    output_high (CH1_PIN2);
-    output_high (CH2_PIN2);
-    output_high (CH1_PIN3);
-    output_high (CH2_PIN3);
-    set_timer0 (-pwm_delay[0]);
-    pwm_stage = 0;
 }

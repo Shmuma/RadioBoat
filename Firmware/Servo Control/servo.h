@@ -13,7 +13,7 @@
 #FUSES BORV20                   //Brownout reset at 2.0V
 #FUSES VREGEN                   //USB voltage regulator enabled
 #FUSES PBADEN                   //PORTB pins are configured as analog input channels on RESET
-#FUSES LPT1OSC                  //Timer1 configured for low-power operation
+#FUSES NOLPT1OSC                //Timer1 configured for low-power operation
 #FUSES NOMCLR                     //Master Clear pin enabled
 #FUSES STVREN                   //Stack full/underflow will cause reset
 #FUSES NOLVP                    //No low voltage prgming, B3(PIC16) or B5(PIC18) used for I/O
