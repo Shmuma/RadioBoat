@@ -1,0 +1,95 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 7.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[      2336,         85]
+NotebookOptionsPosition[      1871,         66]
+NotebookOutlinePosition[      2208,         81]
+CellTagsIndexPosition[      2165,         78]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"l", ":=", "0.3"}], ";"}]], "Input",
+ CellChangeTimes->{{3.510652573480377*^9, 3.510652601966988*^9}, 
+   3.510652661363239*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"alpha", " ", ":=", " ", "10.0"}], ";"}]], "Input",
+ CellChangeTimes->{{3.510652585997435*^9, 3.510652592721554*^9}, 
+   3.510652750944591*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"vel", ":=", "0.1"}], ";"}]], "Input",
+ CellChangeTimes->{{3.510652607783245*^9, 3.510652612132527*^9}, 
+   3.510652748586068*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"delta_t", ":=", "0.1"}], ";"}]], "Input",
+ CellChangeTimes->{{3.510652614801476*^9, 3.510652619894067*^9}, 
+   3.510652745874764*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"max_t", ":=", "5"}], ";"}]], "Input",
+ CellChangeTimes->{{3.510652622826486*^9, 3.510652625341633*^9}, 
+   3.510652743557259*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"A", ":=", 
+   RowBox[{"{", 
+    RowBox[{"0.0", ",", "0.0"}], "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.510652631108217*^9, 3.51065263751532*^9}, {
+  3.510652682247346*^9, 3.510652720012619*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"T", ":=", 
+   RowBox[{"{", 
+    RowBox[{"0.0", ",", "l"}], "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.510652641891668*^9, 3.510652668201252*^9}, {
+  3.510652713047794*^9, 3.510652731041788*^9}}]
+},
+WindowSize->{640, 750},
+WindowMargins->{{158, Automatic}, {57, Automatic}},
+FrontEndVersion->"7.0 for Linux x86 (32-bit) (October 28, 2009)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[545, 20, 162, 4, 32, "Input"],
+Cell[710, 26, 177, 4, 32, "Input"],
+Cell[890, 32, 164, 4, 32, "Input"],
+Cell[1057, 38, 168, 4, 32, "Input"],
+Cell[1228, 44, 164, 4, 32, "Input"],
+Cell[1395, 50, 235, 6, 32, "Input"],
+Cell[1633, 58, 234, 6, 32, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)
+
