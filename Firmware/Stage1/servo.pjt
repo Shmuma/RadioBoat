@@ -1,10 +1,10 @@
 [PROJECT]
-Target=C:\Users\Shmuma\Work\RadioBoat\Firmware\Servo Control\servo.hex
+Target=servo.hex
 Development_Mode=
 Processor_Text=PIC18F2550
 ToolSuite=CCS
 Processor=0x2550
-[C:\Users\Shmuma\Work\RadioBoat\Firmware\Servo Control\servo]
+[servo]
 Type=4
 Path=
 FileList=
@@ -12,17 +12,17 @@ BuildTool=
 OptionString=
 AdditionalOptionString=
 [mru-list]
-1=C:\Users\Shmuma\Work\RadioBoat\Firmware\Servo Control\servo.c
+1=servo.c
 [Windows]
 0=0000 %S 0 0 796 451 3 0
 [Units]
 Link=0
 Count=2
-1=C:\Users\Shmuma\Work\RadioBoat\Firmware\Servo Control\servo
+1=servo
 2=usb_desc.h
 [Opened Files]
-1=servo.h
-2=servo.c
+1=servo.c
+2=servo.h
 3=
 4=
 5=servo.lst

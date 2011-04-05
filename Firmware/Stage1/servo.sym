@@ -352,7 +352,7 @@ User Memory space:
 User Memory space: 
 
 Project Directory:
-    C:\Users\Shmuma\Work\RadioBoat\Firmware\Servo Control\
+    C:\Users\Shmuma\Work\RadioBoat\Firmware\Stage1\
 
 Project Files:
     servo.c
@@ -367,7 +367,7 @@ Project Files:
     ..\..\..\..\..\..\Program Files\PICC\drivers\pic18_usb.c
 
 Units:
-    C:\Users\Shmuma\Work\RadioBoat\Firmware\Servo Control\servo (main)
+    C:\Users\Shmuma\Work\RadioBoat\Firmware\Stage1\servo (main)
 
 Compiler Settings:
     Processor:      PIC18F2550
