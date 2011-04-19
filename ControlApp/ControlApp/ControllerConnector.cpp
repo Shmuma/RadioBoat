@@ -2,6 +2,7 @@
 
 #include <QString>
 #include <QByteArray>
+#include <QMessageBox>
 
 #include "libusb/libusb.h"
 
@@ -40,10 +41,24 @@ void DirectConnector::disconnect ()
 }
 
 
-void DirectConnector::send_raw (const QByteArray& data)
+void DirectConnector::send_raw (char* p, size_t len)
 {
-    int gone;
-    libusb_bulk_transfer (_handle, 1 | LIBUSB_ENDPOINT_OUT, (unsigned char*)data.data (), data.count (), &gone, 1000);
+    int gone, err;
+    err = libusb_bulk_transfer (_handle, 1 | LIBUSB_ENDPOINT_OUT, reinterpret_cast<unsigned char*> (p), len, &gone, 1000);
+
+    if (err != 0)
+        QMessageBox::information (0, tr ("USB send error"), QString::number (err));
+}
+
+
+size_t DirectConnector::recv_raw (char* p, size_t len)
+{
+    int gone, err;
+
+    err = libusb_bulk_transfer (_handle, 1 | LIBUSB_ENDPOINT_IN, reinterpret_cast<unsigned char*> (p), len, &gone, 1000);
+    if (err == 0)
+        return gone;
+    return err;
 }
 
 

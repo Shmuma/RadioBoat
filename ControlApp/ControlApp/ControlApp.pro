@@ -15,7 +15,8 @@ SOURCES += main.cpp\
     ControllerConnector.cpp \
     BoatController.cpp \
     optionsdialog.cpp \
-    options.cpp
+    options.cpp \
+    ControllerProtocol.cpp
 
 HEADERS  += mainwindow.h \
     BoatController.hpp \
@@ -23,8 +24,10 @@ HEADERS  += mainwindow.h \
     BoatController.hpp \
     libusb/libusb.h \
     optionsdialog.hpp \
-    options.hpp
+    options.hpp \
+    ControllerProtocol.hpp
 
 FORMS   += mainwindow.ui \
     optionsdialog.ui
 LIBS    += -L../ControlApp/libusb -lusb-1.0
+INCLUDEPATH += ../../Firmware/

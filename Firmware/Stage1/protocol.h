@@ -1,6 +1,11 @@
 #ifndef __CART_PROTOCOL_H__
 #define __CART_PROTOCOL_H__
 
+#ifdef QT_VERSION
+#define int8 qint8
+#define int16 qint16
+#endif
+
 /* messages */
 #define MSG_REPLY		0
 #define MSG_GET_VER		1

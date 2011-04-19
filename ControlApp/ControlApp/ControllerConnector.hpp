@@ -17,8 +17,8 @@ public:
     virtual bool connect () = 0;
     virtual void disconnect () = 0;
 
-    virtual void send_raw (const QByteArray& data) = 0;
-
+    virtual void send_raw (char* p, size_t len) = 0;
+    virtual size_t recv_raw (char* p, size_t len) = 0;
     virtual bool is_connected () const = 0;
 
     virtual QString state () const = 0;
@@ -52,7 +52,8 @@ public:
     bool connect ();
     void disconnect ();
 
-    void send_raw (const QByteArray& data);
+    void send_raw (char* p, size_t len);
+    size_t recv_raw (char* p, size_t len);
 
     bool is_connected () const
     { return _connected; }
@@ -89,9 +90,14 @@ public:
         _sock.disconnectFromHost ();
     }
 
-    void send_raw (const QByteArray& data)
+    void send_raw (char* p, size_t len)
     {
-        _sock.write (data);
+        _sock.write (p, len);
+    }
+
+    size_t recv_raw (char* p, size_t len)
+    {
+        return _sock.read (p, len);
     }
 
     bool is_connected () const

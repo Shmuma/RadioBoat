@@ -80,7 +80,6 @@ void MainWindow::keyPressEvent (QKeyEvent* event)
             break;
         default:
             QMainWindow::keyPressEvent (event);
-
         }
     }
     else
