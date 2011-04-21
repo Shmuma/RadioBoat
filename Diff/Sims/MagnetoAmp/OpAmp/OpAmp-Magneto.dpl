@@ -1,0 +1,31 @@
+<Qucs Schematic 0.0.16>
+<Properties>
+  <View=-200,0,883,1379,1,56,0>
+  <Grid=10,10,0>
+  <DataSet=OpAmp-Magneto.dat>
+  <DataDisplay=OpAmp-Magneto.sch>
+  <OpenDisplay=1>
+  <Script=OpAmp-Magneto.m>
+  <RunScript=0>
+  <showFrame=0>
+  <FrameText0=Title>
+  <FrameText1=Drawn By:>
+  <FrameText2=Date:>
+  <FrameText3=Revision:>
+</Properties>
+<Symbol>
+</Symbol>
+<Components>
+</Components>
+<Wires>
+</Wires>
+<Diagrams>
+  <Rect -70 590 500 250 3 #c0c0c0 1 00 1 0 0.5 3 1 -1.2 0.5 1.2 1 -1 0.5 1 315 0 225 "" "" "">
+	<"Vinp.Vt" #ff0000 2 3 0 0 0>
+  </Rect>
+  <Rect -70 287 499 247 3 #c0c0c0 1 00 1 0 0.5 3 1 -20 10 20 1 -1 0.5 1 315 0 225 "" "" "">
+	<"Vout.Vt" #0000ff 2 3 0 0 0>
+  </Rect>
+</Diagrams>
+<Paintings>
+</Paintings>
